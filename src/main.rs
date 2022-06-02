@@ -1,6 +1,7 @@
 #![allow(unused)]
 use clap::Parser;
 use std::fs;
+use std::mem;
 
 #[derive(Parser, Debug)]
 struct Cli {
@@ -12,17 +13,17 @@ struct Cli {
 fn main() {
     let args = Cli::parse();
 
-    let paths = fs::read_dir(&args.path).unwrap();
+    walk_dirs(args.path);
+}
+
+fn walk_dirs(path: std::path::PathBuf) {
+    let mut paths = fs::read_dir(path).unwrap();
 
     for path in paths {
         let path_result = path.unwrap();
-
         println!("{}", path_result.path().display());
-
         if fs::metadata(path_result.path()).unwrap().is_dir() {
-            for sub_path in fs::read_dir(path_result.path()).unwrap() {
-                println!(" -- {}", sub_path.unwrap().path().display())
-            }
+            walk_dirs(path_result.path());
         }
     }
 }
