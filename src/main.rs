@@ -17,13 +17,32 @@ fn main() {
 }
 
 fn walk_dirs(path: std::path::PathBuf) {
+    /// recursive walk directories function
+    ///
+    /// prints directory
     let mut paths = fs::read_dir(path).unwrap();
+
+    let indent = String::from(" ");
 
     for path in paths {
         let path_result = path.unwrap();
-        println!("{}", path_result.path().display());
+
+        let path_comp = path_result.path().components().count();
+
         if fs::metadata(path_result.path()).unwrap().is_dir() {
+            println!(
+                "{}{}/",
+                indent.repeat(path_comp),
+                path_result.file_name().to_str().unwrap()
+            );
+
             walk_dirs(path_result.path());
+        } else {
+            println!(
+                "{}{}",
+                indent.repeat(path_comp + 2),
+                path_result.file_name().to_str().unwrap()
+            );
         }
     }
 }
