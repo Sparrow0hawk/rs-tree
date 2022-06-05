@@ -38,6 +38,7 @@ fn walk_dirs(path: std::path::PathBuf) {
         // we pass function a reference and use as_ref to specify that reference
         // is applied to internally Option<&_> rather than &Option<_>
         .filter(|e| !is_hidden(e.as_ref().unwrap()))
+        .filter(|e| e.as_ref().unwrap().file_name().to_str().unwrap() != "target")
         // collect result into vector
         .collect();
 
