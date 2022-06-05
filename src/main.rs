@@ -15,6 +15,8 @@ struct Cli {
 fn main() {
     let args = Cli::parse();
 
+    println!("{}/", args.path.to_str().unwrap());
+
     walk_dirs(args.path);
 }
 
@@ -47,7 +49,11 @@ fn walk_dirs(path: std::path::PathBuf) {
     for path in paths {
         let path_result = path.unwrap();
 
-        let path_comp: usize = path_result.path().components().count();
+        let path_comp: usize = match path_result.path().components().count() {
+            d if d <= 2 => 1,
+            d if d > 2 => d,
+            _ => panic!(),
+        };
 
         if fs::metadata(path_result.path()).unwrap().is_dir() {
             println!(
@@ -60,7 +66,7 @@ fn walk_dirs(path: std::path::PathBuf) {
         } else {
             println!(
                 "{}{}",
-                indent.repeat(path_comp + 2),
+                indent.repeat(path_comp),
                 path_result.file_name().to_str().unwrap()
             );
         }
