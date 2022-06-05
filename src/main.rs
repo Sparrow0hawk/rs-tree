@@ -5,9 +5,10 @@ use std::fs::{DirEntry, ReadDir};
 use std::io;
 use std::mem;
 
+/// A simple directory tree generator
 #[derive(Parser, Debug)]
 struct Cli {
-    // path to create tree from
+    /// Path to create the tree from
     #[clap(parse(from_os_str))]
     path: std::path::PathBuf,
 }
